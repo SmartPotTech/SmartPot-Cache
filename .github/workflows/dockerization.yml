@@ -20,7 +20,7 @@ jobs:
 
       # Paso 3: Construcción de la imagen Docker
       - name: Build the Docker image
-        run: docker build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_APP_NAME }}:${{ secrets.DOCKER_APP_TAG }}(date +%s) .
+        run: docker build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_APP_NAME }}:${{ secrets.DOCKER_APP_TAG }}$(date +%s) .
 
       # Paso 4: Loguearse en Docker Hub
       - name: Log in to Docker Hub
