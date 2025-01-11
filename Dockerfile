@@ -2,7 +2,7 @@
 FROM redis/redis-stack-server:latest
 
 LABEL maintainer="smartpottech@gmail.com" \
-      version="1.0" \
+      version="1.0.0" \
       description="Imagen personalizada de Redis Stack para SmartPot" \
       license="MIT" \
       created="2025-01-11" \
