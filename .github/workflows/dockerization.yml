@@ -10,7 +10,7 @@ env:
     APP_NAME: ${{ secrets.DOCKER_APP_NAME }}
     USERNAME: ${{ secrets.DOCKER_USERNAME }}
     PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-    IMAGE_TAG: ${{ secrets.DOCKER_APP_TAG }}_${{ github.sha }}_$(date +%s)
+    IMAGE_TAG: ${{ secrets.DOCKER_APP_TAG }}_${{ github.sha }}
 
 jobs:
   dockerization:
@@ -32,9 +32,9 @@ jobs:
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
+          username: ${{ env.USERNAME }}
+          password: ${{ env.PASSWORD }}
 
       # Paso 5: Push de la imagen Docker a Docker Hub
       - name: Push Docker image
-        run: docker push ${{ secrets.USERNAME }}/${{ secrets.APP_NAME }}:${{ secrets.IMAGE_TAG }}
+        run: docker push ${{ env.USERNAME }}/${{ env.APP_NAME }}:${{ env.IMAGE_TAG }}
