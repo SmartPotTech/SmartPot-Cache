@@ -10,15 +10,15 @@ LABEL maintainer="smartpottech@gmail.com" \
       environment="local"
 
 # Variables de entorno por defecto
-ENV REDIS_USER=admin
 ENV REDIS_PASSWORD=admin
 ENV REDIS_DATABASE=0
 
-# Expone el puerto estándar de Redis
+# Copiar el script de arranque
+COPY entrypoint.sh /opt/smartpot/entrypoint.sh
+RUN chmod +x /opt/smartpot/entrypoint.sh
+
+# Puerto estándar
 EXPOSE 6379
 
-# Copiar script de inicialización
-COPY init-data.sh /docker-entrypoint-initdb.d/init-data.sh
-
-# Dar permisos
-RUN chmod +x /docker-entrypoint-initdb.d/init-data.sh
+# Usar el entrypoint personalizado
+ENTRYPOINT ["/opt/smartpot/entrypoint.sh"]
