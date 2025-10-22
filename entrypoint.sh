@@ -4,7 +4,7 @@ set -e
 echo "Generando configuración dinámica de Redis..."
 
 # Archivo temporal de configuración
-CONFIG_FILE="/usr/local/etc/redis/redis.conf"
+CONFIG_FILE="/tmp/redis.conf"
 
 # Crear archivo de configuración con los parámetros dinámicos
 cat <<EOF > $CONFIG_FILE
