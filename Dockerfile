@@ -9,7 +9,7 @@ LABEL maintainer="smartpottech@gmail.com" \
       repository="https://github.com/SmartPotTech/SmartPot-Cache" \
       environment="local"
 
-# Variables de entorno por defecto (puedes sobrescribirlas en docker-compose)
+# Variables de entorno por defecto
 ENV REDIS_USER=admin
 ENV REDIS_PASSWORD=admin
 ENV REDIS_DATABASE=0
