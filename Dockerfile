@@ -1,4 +1,4 @@
-# Uso de imagen oficial de Redis Stack
+# Imagen base oficial de Redis Stack Server
 FROM redis/redis-stack-server:latest
 
 LABEL maintainer="smartpottech@gmail.com" \
@@ -9,11 +9,16 @@ LABEL maintainer="smartpottech@gmail.com" \
       repository="https://github.com/SmartPotTech/SmartPot-Cache" \
       environment="local"
 
-# Establecimiento de configuración redis
-COPY redis.conf /usr/local/etc/redis/redis.conf
+# Variables de entorno por defecto (puedes sobrescribirlas en docker-compose)
+ENV REDIS_USER=admin
+ENV REDIS_PASSWORD=admin
+ENV REDIS_DATABASE=0
 
-# Expone el puerto 6379
+# Expone el puerto estándar de Redis
 EXPOSE 6379
 
-# Ejecuta Redis usando el archivo de configuración personalizado
-CMD ["redis-server", "/usr/local/etc/redis/redis.conf"]
+# Copiar script de inicialización
+COPY init-data.sh /docker-entrypoint-initdb.d/init-data.sh
+
+# Dar permisos
+RUN chmod +x /docker-entrypoint-initdb.d/init-data.sh
