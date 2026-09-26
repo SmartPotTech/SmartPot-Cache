@@ -1,24 +1,17 @@
-# Imagen base oficial de Redis Stack Server
-FROM redis/redis-stack-server:latest
+FROM redis:8.8.3-alpine
 
-LABEL maintainer="smartpottech@gmail.com" \
-      version="1.0.0" \
-      description="Imagen personalizada de Redis Stack para SmartPot" \
-      license="MIT" \
-      created="2025-01-11" \
-      repository="https://github.com/SmartPotTech/SmartPot-Cache" \
-      environment="local"
+LABEL org.opencontainers.image.title="SmartPot Cache" \
+      org.opencontainers.image.description="Redis de SmartPot: caché y contadores sin persistencia, con contraseña obligatoria" \
+      org.opencontainers.image.source="https://github.com/SmartPotTech/SmartPot-Cache" \
+      org.opencontainers.image.licenses="MIT"
 
-# Variables de entorno por defecto
-ENV REDIS_PASSWORD=admin
-ENV REDIS_DATABASE=0
+COPY --chmod=755 entrypoint.sh /usr/local/bin/smartpot-entrypoint.sh
 
-# Copiar el script de arranque
-COPY entrypoint.sh /opt/smartpot/entrypoint.sh
-RUN chmod +x /opt/smartpot/entrypoint.sh
+USER 999:1000
 
-# Puerto estándar
 EXPOSE 6379
 
-# Usar el entrypoint personalizado
-ENTRYPOINT ["/opt/smartpot/entrypoint.sh"]
+HEALTHCHECK --interval=15s --timeout=5s --start-period=10s --retries=3 \
+    CMD REDISCLI_AUTH="$REDIS_PASSWORD" redis-cli -h 127.0.0.1 ping | grep -q PONG || exit 1
+
+ENTRYPOINT ["/usr/local/bin/smartpot-entrypoint.sh"]
