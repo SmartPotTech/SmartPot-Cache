@@ -1,4 +1,4 @@
-FROM redis:8.8.3-alpine
+FROM redis:8.10.0-alpine
 
 LABEL org.opencontainers.image.title="SmartPot Cache" \
       org.opencontainers.image.description="Redis de SmartPot: caché y contadores sin persistencia, con contraseña obligatoria" \
