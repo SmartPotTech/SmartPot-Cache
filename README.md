@@ -78,7 +78,7 @@ Cada cambio en `main` pasa por el CI, publica la imagen en GHCR (y en Docker Hub
 
 ## Documentación
 
-Redis guarda solo datos efímeros: si se pierde, la plataforma sigue. La [documentación técnica](https://github.com/SmartPotTech/.github/blob/main/docs/SmartPot_Technical_Documentation.md) explica para qué usa la API cada llave y cómo actúa si Redis no responde. Los diagramas generales muestran la plataforma completa en una sola imagen ampliable:
+Redis guarda solo datos efímeros: si se pierde, la plataforma sigue. Su documentación propia está en [`docs/`](docs/SmartPot_Cache_Documentation.md) (también en [DOCX](docs/SmartPot_Cache_Documentation.docx) y [PDF](docs/SmartPot_Cache_Documentation.pdf)), con sus diagramas en [`docs/diagrams`](docs/diagrams): el general de la imagen y el de las llaves. La [documentación técnica](https://github.com/SmartPotTech/.github/blob/main/docs/SmartPot_Technical_Documentation.md) explica para qué usa la API cada llave y cómo actúa si Redis no responde. Los diagramas generales muestran la plataforma completa en una sola imagen ampliable:
 
 - [Arquitectura completa](https://github.com/SmartPotTech/.github/blob/main/docs/diagrams/SmartPot_Global_01_Architecture.svg): dónde vive Redis y qué llaves guarda
 - [Linaje de los datos](https://github.com/SmartPotTech/.github/blob/main/docs/diagrams/SmartPot_Global_04_Data_Lineage.svg): en qué momento de cada flujo se consulta o se escribe una llave
