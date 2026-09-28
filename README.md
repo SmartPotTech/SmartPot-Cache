@@ -7,18 +7,20 @@
 
 ## Descripción
 
-SmartPot-Cache es el **Redis** de SmartPot. [SmartPot-API](https://github.com/SmartPotTech/SmartPot-API) lo usa para datos cortos y compartidos entre peticiones:
+SmartPot-Cache es el **Redis** de SmartPot. [SmartPot-API](https://github.com/SmartPotTech/SmartPot-API) lo usa para
+datos cortos y compartidos entre peticiones:
 
-| Uso | Llaves | Vida |
-| --- | --- | --- |
-| Límite de peticiones por IP | `smartpot:rate:*` | 1 minuto |
-| Frecuencia mínima de telemetría por cultivo | `smartpot:reading:*` | 5 segundos |
-| Enfriamiento del agente y de las alertas | `smartpot:agent:*`, `smartpot:notify:*`, `smartpot:ai-eval:*` | Minutos u horas |
-| Perfiles de cultivo del servicio de IA | `smartpot:ai:crop-profiles` | 1 hora |
-| Resumen de lo aprendido por la IA | `smartpot:ai:learning-status` | 1 minuto |
-| Códigos de un solo uso para vincular Telegram | `smartpot:channel-link:telegram:*` | 10 minutos (se borran al usarse) |
+| Uso                                           | Llaves                                                        | Vida                             |
+|-----------------------------------------------|---------------------------------------------------------------|----------------------------------|
+| Límite de peticiones por IP                   | `smartpot:rate:*`                                             | 1 minuto                         |
+| Frecuencia mínima de telemetría por cultivo   | `smartpot:reading:*`                                          | 5 segundos                       |
+| Enfriamiento del agente y de las alertas      | `smartpot:agent:*`, `smartpot:notify:*`, `smartpot:ai-eval:*` | Minutos u horas                  |
+| Perfiles de cultivo del servicio de IA        | `smartpot:ai:crop-profiles`                                   | 1 hora                           |
+| Resumen de lo aprendido por la IA             | `smartpot:ai:learning-status`                                 | 1 minuto                         |
+| Códigos de un solo uso para vincular Telegram | `smartpot:channel-link:telegram:*`                            | 10 minutos (se borran al usarse) |
 
-Es una caché **sin persistencia**: si se reinicia, la API reconstruye todo. Si Redis no responde, la API sigue funcionando con memoria local durante 30 segundos y vuelve a intentar.
+Es una caché **sin persistencia**: si se reinicia, la API reconstruye todo. Si Redis no responde, la API sigue
+funcionando con memoria local durante 30 segundos y vuelve a intentar.
 
 ## Seguridad
 
@@ -55,11 +57,11 @@ cp .env.example .env    # define REDIS_PASSWORD
 docker compose up -d
 ```
 
-| Variable | Por defecto | Descripción |
-| --- | --- | --- |
-| `REDIS_PASSWORD` | — | Obligatoria, mínimo 16 caracteres |
-| `REDIS_MAXMEMORY` | `128mb` | Memoria máxima; se descartan las llaves menos usadas (LRU) |
-| `REDIS_DATABASES` | `4` | Bases lógicas disponibles |
+| Variable          | Por defecto | Descripción                                                |
+|-------------------|-------------|------------------------------------------------------------|
+| `REDIS_PASSWORD`  | —           | Obligatoria, mínimo 16 caracteres                          |
+| `REDIS_MAXMEMORY` | `128mb`     | Memoria máxima; se descartan las llaves menos usadas (LRU) |
+| `REDIS_DATABASES` | `4`         | Bases lógicas disponibles                                  |
 
 ### Prueba de humo
 
@@ -74,14 +76,25 @@ sh tests/smoke.sh smartpot-cache:ci
 docker pull ghcr.io/smartpottech/smartpot-cache:latest
 ```
 
-Cada cambio en `main` pasa por el CI, publica la imagen en GHCR (y en Docker Hub como réplica cuando el repositorio tiene credenciales) y pide el despliegue al workflow central de [SmartPotTech/.github](https://github.com/SmartPotTech/.github), que actualiza producción de a uno y verifica `/health`.
+Cada cambio en `main` pasa por el CI, publica la imagen en GHCR (y en Docker Hub como réplica cuando el repositorio
+tiene credenciales) y pide el despliegue al workflow central
+de [SmartPotTech/.github](https://github.com/SmartPotTech/.github), que actualiza producción de a uno y verifica
+`/health`.
 
 ## Documentación
 
-Redis guarda solo datos efímeros: si se pierde, la plataforma sigue. Su documentación propia está en [`docs/`](docs/SmartPot_Cache_Documentation.md) (también en [DOCX](docs/SmartPot_Cache_Documentation.docx) y [PDF](docs/SmartPot_Cache_Documentation.pdf)), con sus diagramas en [`docs/diagrams`](docs/diagrams): el general de la imagen y el de las llaves. La [documentación técnica](https://github.com/SmartPotTech/.github/blob/main/docs/SmartPot_Technical_Documentation.md) explica para qué usa la API cada llave y cómo actúa si Redis no responde. Los diagramas generales muestran la plataforma completa en una sola imagen ampliable:
+Redis guarda solo datos efímeros: si se pierde, la plataforma sigue. Su documentación propia está en [
+`docs/`](docs/SmartPot_Cache_Documentation.md) (también en [DOCX](docs/SmartPot_Cache_Documentation.docx)
+y [PDF](docs/SmartPot_Cache_Documentation.pdf)), con sus diagramas en [`docs/diagrams`](docs/diagrams): el general de la
+imagen y el de las llaves.
+La [documentación técnica](https://github.com/SmartPotTech/.github/blob/main/docs/SmartPot_Technical_Documentation.md)
+explica para qué usa la API cada llave y cómo actúa si Redis no responde. Los diagramas generales muestran la plataforma
+completa en una sola imagen ampliable:
 
-- [Arquitectura completa](https://github.com/SmartPotTech/.github/blob/main/docs/diagrams/SmartPot_Global_01_Architecture.svg): dónde vive Redis y qué llaves guarda
-- [Linaje de los datos](https://github.com/SmartPotTech/.github/blob/main/docs/diagrams/SmartPot_Global_04_Data_Lineage.svg): en qué momento de cada flujo se consulta o se escribe una llave
+- [Arquitectura completa](https://github.com/SmartPotTech/.github/blob/main/docs/diagrams/SmartPot_Global_01_Architecture.svg):
+  dónde vive Redis y qué llaves guarda
+- [Linaje de los datos](https://github.com/SmartPotTech/.github/blob/main/docs/diagrams/SmartPot_Global_04_Data_Lineage.svg):
+  en qué momento de cada flujo se consulta o se escribe una llave
 
 ## Licencia
 
