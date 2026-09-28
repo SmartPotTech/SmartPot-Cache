@@ -14,24 +14,27 @@ proyecto: smartpot.app
 
 ## Ficha del documento
 
-| Campo | Valor |
-| --- | --- |
-| Proyecto | SmartPot · [smartpot.app](https://smartpot.app) |
-| Componente | [SmartPot-Cache](https://github.com/SmartPotTech/SmartPot-Cache) |
-| Versión | 1.0 · septiembre 2026 |
-| Alcance | Llaves y su vida, endurecimiento, comportamiento ante fallas, configuración y pruebas |
+| Campo                          | Valor                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+|--------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Proyecto                       | SmartPot · [smartpot.app](https://smartpot.app)                                                                                                                                                                                                                                                                                                                                                                                                         |
+| Componente                     | [SmartPot-Cache](https://github.com/SmartPotTech/SmartPot-Cache)                                                                                                                                                                                                                                                                                                                                                                                        |
+| Versión                        | 1.0 · septiembre 2026                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| Alcance                        | Llaves y su vida, endurecimiento, comportamiento ante fallas, configuración y pruebas                                                                                                                                                                                                                                                                                                                                                                   |
 | Documentación de la plataforma | [Documentación técnica](https://github.com/SmartPotTech/.github/blob/main/docs/SmartPot_Technical_Documentation.md), [recorrido del proyecto](https://github.com/SmartPotTech/.github/blob/main/docs/SmartPot_Project_Journey.md), [ciclo de vida](https://github.com/SmartPotTech/.github/blob/main/docs/SmartPot_Software_Lifecycle.md) y [diagramas generales](https://github.com/SmartPotTech/.github/blob/main/docs/README.md#diagramas-generales) |
-| Mantenimiento | Se genera desde `docs/` de este repositorio con las herramientas de `.github/docs/tools`; se actualiza con cada cambio del componente |
+| Mantenimiento                  | Se genera desde `docs/` de este repositorio con las herramientas de `.github/docs/tools`; se actualiza con cada cambio del componente                                                                                                                                                                                                                                                                                                                   |
 
 ## 1. Propósito
 
 ### En palabras simples
 
-Redis guarda datos cortos que la API comparte entre peticiones: cuántas veces pidió algo una IP, cuándo llegó la última lectura de un cultivo, cuándo actuó el agente por última vez y los códigos de un solo uso para vincular Telegram. Nada de eso es permanente: si Redis se reinicia, la plataforma sigue y lo reconstruye.
+Redis guarda datos cortos que la API comparte entre peticiones: cuántas veces pidió algo una IP, cuándo llegó la última
+lectura de un cultivo, cuándo actuó el agente por última vez y los códigos de un solo uso para vincular Telegram. Nada
+de eso es permanente: si Redis se reinicia, la plataforma sigue y lo reconstruye.
 
 ## 2. Arquitectura del componente
 
 <!-- diagrama: SmartPot_Cache_Global_Component | titulo=SmartPot-Cache por dentro -->
+
 ```mermaid
 %%{init: {"theme": "base", "fontFamily": "Segoe UI, Arial, sans-serif", "themeVariables": {"fontFamily": "Segoe UI, Arial, sans-serif", "fontSize": "15px", "primaryColor": "#DDF5EA", "primaryTextColor": "#17261F", "primaryBorderColor": "#067A52", "secondaryColor": "#E3F2FB", "secondaryTextColor": "#17261F", "secondaryBorderColor": "#1F6FA0", "tertiaryColor": "#F2F7F4", "tertiaryTextColor": "#17261F", "tertiaryBorderColor": "#D5E3DC", "lineColor": "#5B6B63", "textColor": "#17261F", "mainBkg": "#DDF5EA", "nodeBorder": "#067A52", "clusterBkg": "#F7FAF8", "clusterBorder": "#D5E3DC", "edgeLabelBackground": "#FFFFFF", "actorBkg": "#067A52", "actorBorder": "#0B3D2B", "actorTextColor": "#FFFFFF", "actorLineColor": "#5B6B63", "signalColor": "#17261F", "signalTextColor": "#17261F", "labelBoxBkgColor": "#0B3D2B", "labelBoxBorderColor": "#0B3D2B", "labelTextColor": "#FFFFFF", "loopTextColor": "#0B3D2B", "noteBkgColor": "#FDF4DD", "noteBorderColor": "#C98D12", "noteTextColor": "#17261F", "activationBkgColor": "#DDF5EA", "activationBorderColor": "#067A52", "attributeBackgroundColorOdd": "#FFFFFF", "attributeBackgroundColorEven": "#F2F7F4"}, "layout": "elk", "elk": {"nodePlacementStrategy": "BRANDES_KOEPF", "mergeEdges": false, "cycleBreakingStrategy": "GREEDY"}}}%%
 flowchart LR
@@ -64,6 +67,7 @@ flowchart LR
 ## 3. Llaves
 
 <!-- diagrama: SmartPot_Cache_01_Keys | titulo=Quién escribe cada llave y cuánto vive -->
+
 ```mermaid
 %%{init: {"theme": "base", "fontFamily": "Segoe UI, Arial, sans-serif", "themeVariables": {"fontFamily": "Segoe UI, Arial, sans-serif", "fontSize": "15px", "primaryColor": "#DDF5EA", "primaryTextColor": "#17261F", "primaryBorderColor": "#067A52", "secondaryColor": "#E3F2FB", "secondaryTextColor": "#17261F", "secondaryBorderColor": "#1F6FA0", "tertiaryColor": "#F2F7F4", "tertiaryTextColor": "#17261F", "tertiaryBorderColor": "#D5E3DC", "lineColor": "#5B6B63", "textColor": "#17261F", "mainBkg": "#DDF5EA", "nodeBorder": "#067A52", "clusterBkg": "#F7FAF8", "clusterBorder": "#D5E3DC", "edgeLabelBackground": "#FFFFFF", "actorBkg": "#067A52", "actorBorder": "#0B3D2B", "actorTextColor": "#FFFFFF", "actorLineColor": "#5B6B63", "signalColor": "#17261F", "signalTextColor": "#17261F", "labelBoxBkgColor": "#0B3D2B", "labelBoxBorderColor": "#0B3D2B", "labelTextColor": "#FFFFFF", "loopTextColor": "#0B3D2B", "noteBkgColor": "#FDF4DD", "noteBorderColor": "#C98D12", "noteTextColor": "#17261F", "activationBkgColor": "#DDF5EA", "activationBorderColor": "#067A52", "attributeBackgroundColorOdd": "#FFFFFF", "attributeBackgroundColorEven": "#F2F7F4"}}}%%
 flowchart TB
@@ -96,20 +100,22 @@ flowchart TB
 
 ## 4. Endurecimiento
 
-| Control | Detalle |
-| --- | --- |
-| Contraseña | `REDIS_PASSWORD` obligatoria, mínimo 16 caracteres; sin ella el contenedor no arranca |
-| Configuración | Se genera en `/tmp` al arrancar y nunca aparece en los logs |
-| Comandos | `FLUSHALL`, `FLUSHDB`, `CONFIG`, `DEBUG` y `SHUTDOWN` deshabilitados |
-| Contenedor | Usuario `999`, solo lectura y sin capacidades de Linux |
-| Red | En producción no publica puertos: solo la API lo alcanza por la red interna |
+| Control       | Detalle                                                                               |
+|---------------|---------------------------------------------------------------------------------------|
+| Contraseña    | `REDIS_PASSWORD` obligatoria, mínimo 16 caracteres; sin ella el contenedor no arranca |
+| Configuración | Se genera en `/tmp` al arrancar y nunca aparece en los logs                           |
+| Comandos      | `FLUSHALL`, `FLUSHDB`, `CONFIG`, `DEBUG` y `SHUTDOWN` deshabilitados                  |
+| Contenedor    | Usuario `999`, solo lectura y sin capacidades de Linux                                |
+| Red           | En producción no publica puertos: solo la API lo alcanza por la red interna           |
 
 ## 5. Configuración y pruebas
 
-| Variable | Por defecto | Uso |
-| --- | --- | --- |
-| `REDIS_PASSWORD` | — | Obligatoria |
-| `REDIS_MAXMEMORY` | `128mb` | Memoria máxima; se descartan las llaves menos usadas |
-| `REDIS_DATABASES` | `4` | Bases lógicas |
+| Variable          | Por defecto | Uso                                                  |
+|-------------------|-------------|------------------------------------------------------|
+| `REDIS_PASSWORD`  | —           | Obligatoria                                          |
+| `REDIS_MAXMEMORY` | `128mb`     | Memoria máxima; se descartan las llaves menos usadas |
+| `REDIS_DATABASES` | `4`         | Bases lógicas                                        |
 
-`sh tests/smoke.sh smartpot-cache:ci` comprueba la autenticación, que `FLUSHALL` y `CONFIG` respondan como comandos desconocidos, que los logs no muestren la contraseña y que sin contraseña el contenedor no arranque. Cada cambio en `main` pasa por el CI, publica `ghcr.io/smartpottech/smartpot-cache` y pide el despliegue central de `.github`.
+`sh tests/smoke.sh smartpot-cache:ci` comprueba la autenticación, que `FLUSHALL` y `CONFIG` respondan como comandos
+desconocidos, que los logs no muestren la contraseña y que sin contraseña el contenedor no arranque. Cada cambio en
+`main` pasa por el CI, publica `ghcr.io/smartpottech/smartpot-cache` y pide el despliegue central de `.github`.
