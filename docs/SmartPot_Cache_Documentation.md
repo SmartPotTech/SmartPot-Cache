@@ -5,7 +5,7 @@ acento: Cache
 subtitulo: La memoria corta de SmartPot
 bajada: Redis endurecido para límites de peticiones, enfriamientos del agente, cachés de la IA y códigos de vinculación de Telegram, sin persistencia y solo en la red interna.
 documento: SmartPot-Cache
-version: 1.0 · septiembre 2026
+version: 1.1 · octubre 2026
 equipo: SmartPotTech
 proyecto: smartpot.app
 -->
@@ -18,7 +18,7 @@ proyecto: smartpot.app
 |--------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Proyecto                       | SmartPot · [smartpot.app](https://smartpot.app)                                                                                                                                                                                                                                                                                                                                                                                                         |
 | Componente                     | [SmartPot-Cache](https://github.com/SmartPotTech/SmartPot-Cache)                                                                                                                                                                                                                                                                                                                                                                                        |
-| Versión                        | 1.0 · septiembre 2026                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| Versión                        | 1.1 · octubre 2026                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | Alcance                        | Llaves y su vida, endurecimiento, comportamiento ante fallas, configuración y pruebas                                                                                                                                                                                                                                                                                                                                                                   |
 | Documentación de la plataforma | [Documentación técnica](https://github.com/SmartPotTech/.github/blob/main/docs/SmartPot_Technical_Documentation.md), [recorrido del proyecto](https://github.com/SmartPotTech/.github/blob/main/docs/SmartPot_Project_Journey.md), [ciclo de vida](https://github.com/SmartPotTech/.github/blob/main/docs/SmartPot_Software_Lifecycle.md) y [diagramas generales](https://github.com/SmartPotTech/.github/blob/main/docs/README.md#diagramas-generales) |
 | Mantenimiento                  | Se genera desde `docs/` de este repositorio con las herramientas de `.github/docs/tools`; se actualiza con cada cambio del componente                                                                                                                                                                                                                                                                                                                   |
@@ -80,6 +80,8 @@ flowchart TB
     notify["notify:* · 1 hora<br/>alertas sin repetir"]
     profiles["ai:crop-profiles · 1 hora<br/>ai:learning-status · 1 minuto"]
     link["channel-link:telegram:código · 10 min<br/>se borra al usarse (GETDEL)"]
+    share["crop-share:telegram:código · 10 min<br/>compartir un cultivo con otro chat"]
+    weather["weather:lat:lon · 10 min<br/>clima del lugar · 2 min si falló"]
   end
   http["Filtro de peticiones"] --> rate
   mqtt["Telemetría MQTT"] --> reading
@@ -87,6 +89,8 @@ flowchart TB
   alerts["Notificaciones"] --> notify
   ai["Cliente de la IA"] --> profiles
   tg["Vincular Telegram"] --> link
+  tg --> share
+  crops["Lugar del cultivo"] --> weather
   classDef leaf fill:#DDF5EA,stroke:#067A52,color:#17261F
   classDef water fill:#E3F2FB,stroke:#1F6FA0,color:#17261F
   classDef sun fill:#FDF4DD,stroke:#C98D12,color:#17261F
@@ -94,8 +98,8 @@ flowchart TB
   classDef core fill:#067A52,stroke:#0B3D2B,color:#FFFFFF
   classDef deep fill:#0B3D2B,stroke:#06281C,color:#FFFFFF
   classDef muted fill:#F2F7F4,stroke:#5B6B63,color:#17261F
-  class rate,reading,aieval,agent,notify,profiles,link leaf
-  class http,mqtt,alerts,ai,tg water
+  class rate,reading,aieval,agent,notify,profiles,link,share,weather leaf
+  class http,mqtt,alerts,ai,tg,crops water
 ```
 
 ## 4. Endurecimiento
