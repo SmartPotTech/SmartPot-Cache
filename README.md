@@ -10,14 +10,16 @@
 SmartPot-Cache es el **Redis** de SmartPot. [SmartPot-API](https://github.com/SmartPotTech/SmartPot-API) lo usa para
 datos cortos y compartidos entre peticiones:
 
-| Uso                                           | Llaves                                                        | Vida                             |
-|-----------------------------------------------|---------------------------------------------------------------|----------------------------------|
-| Límite de peticiones por IP                   | `smartpot:rate:*`                                             | 1 minuto                         |
-| Frecuencia mínima de telemetría por cultivo   | `smartpot:reading:*`                                          | 5 segundos                       |
-| Enfriamiento del agente y de las alertas      | `smartpot:agent:*`, `smartpot:notify:*`, `smartpot:ai-eval:*` | Minutos u horas                  |
-| Perfiles de cultivo del servicio de IA        | `smartpot:ai:crop-profiles`                                   | 1 hora                           |
-| Resumen de lo aprendido por la IA             | `smartpot:ai:learning-status`                                 | 1 minuto                         |
-| Códigos de un solo uso para vincular Telegram | `smartpot:channel-link:telegram:*`                            | 10 minutos (se borran al usarse) |
+| Uso                                              | Llaves                                                        | Vida                                    |
+|--------------------------------------------------|---------------------------------------------------------------|-----------------------------------------|
+| Límite de peticiones por IP                      | `smartpot:rate:*`                                             | 1 minuto                                |
+| Frecuencia mínima de telemetría por cultivo      | `smartpot:reading:*`                                          | 5 segundos                              |
+| Enfriamiento del agente y de las alertas         | `smartpot:agent:*`, `smartpot:notify:*`, `smartpot:ai-eval:*` | Minutos u horas                         |
+| Perfiles de cultivo del servicio de IA           | `smartpot:ai:crop-profiles`                                   | 1 hora                                  |
+| Resumen de lo aprendido por la IA                | `smartpot:ai:learning-status`                                 | 1 minuto                                |
+| Códigos de un solo uso para vincular Telegram    | `smartpot:channel-link:telegram:*`                            | 10 minutos (se borran al usarse)        |
+| Enlaces de un solo uso para compartir un cultivo | `smartpot:crop-share:telegram:*`                              | 10 minutos (se borran al usarse)        |
+| Clima del lugar de cada cultivo                  | `smartpot:weather:{lat}:{lon}`                                | 10 minutos (2 si el clima no respondió) |
 
 Es una caché **sin persistencia**: si se reinicia, la API reconstruye todo. Si Redis no responde, la API sigue
 funcionando con memoria local durante 30 segundos y vuelve a intentar.
