@@ -9,6 +9,8 @@ flowchart TB
     notify["notify:* · 1 hora<br/>alertas sin repetir"]
     profiles["ai:crop-profiles · 1 hora<br/>ai:learning-status · 1 minuto"]
     link["channel-link:telegram:código · 10 min<br/>se borra al usarse (GETDEL)"]
+    share["crop-share:telegram:código · 10 min<br/>compartir un cultivo con otro chat"]
+    weather["weather:lat:lon · 10 min<br/>clima del lugar · 2 min si falló"]
   end
   http["Filtro de peticiones"] --> rate
   mqtt["Telemetría MQTT"] --> reading
@@ -16,6 +18,8 @@ flowchart TB
   alerts["Notificaciones"] --> notify
   ai["Cliente de la IA"] --> profiles
   tg["Vincular Telegram"] --> link
+  tg --> share
+  crops["Lugar del cultivo"] --> weather
   classDef leaf fill:#DDF5EA,stroke:#067A52,color:#17261F
   classDef water fill:#E3F2FB,stroke:#1F6FA0,color:#17261F
   classDef sun fill:#FDF4DD,stroke:#C98D12,color:#17261F
@@ -23,5 +27,5 @@ flowchart TB
   classDef core fill:#067A52,stroke:#0B3D2B,color:#FFFFFF
   classDef deep fill:#0B3D2B,stroke:#06281C,color:#FFFFFF
   classDef muted fill:#F2F7F4,stroke:#5B6B63,color:#17261F
-  class rate,reading,aieval,agent,notify,profiles,link leaf
-  class http,mqtt,alerts,ai,tg water
+  class rate,reading,aieval,agent,notify,profiles,link,share,weather leaf
+  class http,mqtt,alerts,ai,tg,crops water
