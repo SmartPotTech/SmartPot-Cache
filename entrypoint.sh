@@ -30,7 +30,7 @@ save ""
 appendonly no
 dir /tmp
 requirepass ${PASSWORD}
-io-threads 4
+io-threads ${VALKEY_IO_THREADS:-4}
 io-threads-do-reads yes
 activedefrag yes
 lazyfree-lazy-eviction yes
@@ -43,17 +43,17 @@ rename-command DEBUG ""
 rename-command SHUTDOWN ""
 EOF
 
-# Listener Dual Unix Domain Socket (UDS) si el directorio compartido o la variable VALKEY_SOCKET están disponibles
-VALKEY_SOCKET_PATH="${VALKEY_SOCKET:-/var/run/smartpot/valkey.sock}"
-SOCKET_DIR="$(dirname "$VALKEY_SOCKET_PATH")"
-if [ -d "$SOCKET_DIR" ] && [ -w "$SOCKET_DIR" ]; then
-  cat >> "$CONFIG" <<EOF
-unixsocket ${VALKEY_SOCKET_PATH}
-unixsocketperm 770
-EOF
-  echo "UDS habilitado: ${VALKEY_SOCKET_PATH} (perm 770)"
-else
-  echo "UDS no disponible o sin permisos en ${SOCKET_DIR}; operando exclusivamente en modo TCP 6379."
+# Socket UNIX opcional, además de TCP 6379: solo si se pide con VALKEY_SOCKET y su carpeta es un volumen escribible
+# (con la raíz de solo lectura, la carpeta de la imagen no sirve y Valkey no arrancaría).
+if [ -n "${VALKEY_SOCKET:-}" ]; then
+  SOCKET_DIR="$(dirname "$VALKEY_SOCKET")"
+  if touch "$SOCKET_DIR/.smartpot-probe" 2>/dev/null; then
+    rm -f "$SOCKET_DIR/.smartpot-probe"
+    printf 'unixsocket %s\nunixsocketperm 770\n' "$VALKEY_SOCKET" >> "$CONFIG"
+    echo "Socket UNIX habilitado en ${VALKEY_SOCKET} (permisos 770)."
+  else
+    echo "Aviso: ${SOCKET_DIR} no es escribible; Valkey atiende solo por TCP 6379."
+  fi
 fi
 
 # Carga en segundo plano de la librería de funciones Lua atómicas al arrancar el servicio
@@ -71,5 +71,5 @@ if [ -f "$LUA_LIB" ]; then
   ) &
 fi
 
-echo "Valkey listo: ${MAXMEMORY} de memoria, multi-io 4 threads, sin persistencia y con contraseña."
+echo "Valkey listo: ${MAXMEMORY} de memoria, ${VALKEY_IO_THREADS:-4} hilos de E/S, sin persistencia y con contraseña."
 exec valkey-server "$CONFIG"

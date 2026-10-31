@@ -28,6 +28,7 @@ check "el contenedor queda sano" '[ "$(docker inspect -f "{{.State.Health.Status
 check "sin contraseña se rechaza" 'cli ping | grep -q NOAUTH'
 check "con contraseña responde" 'cli -a "$PASS" --no-auth-warning ping | grep -q PONG'
 check "la imagen es Valkey, no Redis" 'cli -a "$PASS" --no-auth-warning info server | grep -qi "valkey_version"'
+check "sin VALKEY_SOCKET no abre socket UNIX" '! docker exec "$NAME" test -S /var/run/smartpot/valkey.sock'
 check "guarda y lee valores" 'cli -a "$PASS" --no-auth-warning set smoke 1 >/dev/null && cli -a "$PASS" --no-auth-warning get smoke | grep -q 1'
 check "funciones Lua smartpot registradas" 'cli -a "$PASS" --no-auth-warning function list | grep -q smartpot'
 check "FLUSHALL está deshabilitado" 'cli -a "$PASS" --no-auth-warning flushall | grep -qi "unknown command"'
