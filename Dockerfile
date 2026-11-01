@@ -5,7 +5,8 @@ LABEL org.opencontainers.image.title="SmartPot Cache (Valkey)" \
       org.opencontainers.image.source="https://github.com/SmartPotTech/SmartPot-Cache-Valkey" \
       org.opencontainers.image.licenses="MIT"
 
-RUN mkdir -p /var/run/smartpot /usr/local/share/valkey /opt/smartpot/lua && \
+# Parches de Alpine al construir (zlib y demás) aunque la etiqueta de Valkey no haya cambiado.
+RUN apk upgrade --no-cache &&     mkdir -p /var/run/smartpot /usr/local/share/valkey /opt/smartpot/lua && \
     chown -R 999:1000 /var/run/smartpot /usr/local/share/valkey /opt/smartpot/lua
 
 COPY --chmod=755 entrypoint.sh /usr/local/bin/smartpot-entrypoint.sh
