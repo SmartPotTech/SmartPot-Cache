@@ -67,9 +67,30 @@ SmartPot-Cache-Valkey/
 
 ## Guía de Instalación
 
+### Despliegue en un comando
+
+La imagen es pública: `ghcr.io/smartpottech/smartpot-cache-valkey`. La plataforma completa, con este servicio incluido, se
+levanta con un solo comando y sin descargar el código:
+
 ```bash
-git clone https://github.com/SmartPotTech/SmartPot-Cache-Valkey.git
-cd SmartPot-Cache-Valkey
+curl -fsSL https://raw.githubusercontent.com/SmartPotTech/.github/main/docker/demo-beta/compose.yaml | docker compose -f - up -d --wait
+```
+
+Abre http://localhost:5173 e ingresa con `demo@smartpot.app` / `SmartPot2026`. Se detiene con
+`docker compose -p smartpot-demo-beta down` (con `-v` borra también los datos). Más detalle en la
+[demo beta](https://github.com/SmartPotTech/.github/tree/main/docker/demo-beta).
+
+Solo este servicio, con la imagen publicada:
+
+```bash
+docker run -d --name smartpot-cache --read-only --tmpfs /tmp --cap-drop ALL \
+  -p 127.0.0.1:6379:6379 -e VALKEY_PASSWORD=<mínimo-16-caracteres> \
+  ghcr.io/smartpottech/smartpot-cache-valkey:latest
+```
+
+### Desde el código con Docker Compose
+
+```bash
 cp .env.example .env    # define VALKEY_PASSWORD
 docker compose up -d
 ```
