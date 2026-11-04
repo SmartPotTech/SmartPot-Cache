@@ -1,4 +1,4 @@
-FROM valkey/valkey:9.1.2-alpine
+FROM valkey/valkey:9.1.3-alpine
 
 LABEL org.opencontainers.image.title="SmartPot Cache (Valkey)" \
       org.opencontainers.image.description="SmartPot Valkey cache: ephemeral state, counters, UDS, and atomic Lua functions without persistence and with mandatory password" \
