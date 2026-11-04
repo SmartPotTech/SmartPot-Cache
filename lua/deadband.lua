@@ -1,13 +1,13 @@
 -- deadband.lua
--- KEYS[1] = crop deadband key (e.g., "crop:{id}:deadband")
--- ARGV[1] = temperature (float)
--- ARGV[2] = humidity (float)
+-- KEYS[1] = llave de banda muerta del cultivo (p. ej., "crop:{id}:deadband")
+-- ARGV[1] = temperatura (float)
+-- ARGV[2] = humedad (float)
 -- ARGV[3] = ph (float)
 -- ARGV[4] = tds (float)
--- ARGV[5] = soil_moisture (float)
--- ARGV[6] = max_age_seconds (float, default 60.0)
--- ARGV[7] = current_timestamp (float)
--- Returns 1 if reading exceeds deadband or baseline expired (should record/publish), 0 if filtered out
+-- ARGV[5] = humedad del sustrato (float)
+-- ARGV[6] = antigüedad máxima en segundos (float, por defecto 60.0)
+-- ARGV[7] = marca de tiempo actual (float)
+-- Devuelve 1 si la lectura supera la banda muerta o si venció la línea base (debe registrarse/publicarse), 0 si se filtra
 
 local key = KEYS[1]
 local temp = tonumber(ARGV[1])

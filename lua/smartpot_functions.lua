@@ -1,7 +1,7 @@
 #!lua name=smartpot
--- SmartPot Atomic Functions for Valkey
--- 1. deadband_check_and_update: Compares telemetry with cached baseline and updates if delta exceeded.
--- 2. mqtt_dedup_and_rate_limit: Leaky-bucket GCRA rate limiting and packet sequence deduplication.
+-- Funciones atómicas de SmartPot para Valkey
+-- 1. deadband_check_and_update: Compara la telemetría con la línea base en caché y actualiza si se supera el delta.
+-- 2. mqtt_dedup_and_rate_limit: Límite de tasa GCRA (cubo con fugas) y deduplicación de secuencia de paquetes.
 
 local function deadband_check_and_update(keys, args)
     local key = keys[1]
@@ -60,15 +60,15 @@ local function mqtt_dedup_and_rate_limit(keys, args)
     local burst = tonumber(args[3]) or 20.0
     local now = tonumber(args[4]) or os.time()
 
-    -- Deduplication check
+    -- Verificación de deduplicación
     if seq_id and seq_id ~= '' and seq_id ~= '0' then
         local exists = redis.call('EXISTS', dedup_key)
         if exists == 1 then
-            return 2 -- Duplicate packet detected
+            return 2 -- Paquete duplicado detectado
         end
     end
 
-    -- GCRA Leaky Bucket
+    -- Cubo con fugas GCRA
     local emission_interval = 1.0 / rate
     local delay_tolerance = burst * emission_interval
     local tat = tonumber(redis.call('GET', gcra_key)) or now
@@ -77,7 +77,7 @@ local function mqtt_dedup_and_rate_limit(keys, args)
     local allow_at = new_tat - delay_tolerance
 
     if now < allow_at then
-        return 0 -- Rate limit exceeded
+        return 0 -- Límite de tasa excedido
     end
 
     redis.call('SET', gcra_key, tostring(new_tat), 'EX', math.ceil(delay_tolerance + 10))
@@ -86,7 +86,7 @@ local function mqtt_dedup_and_rate_limit(keys, args)
         redis.call('SET', dedup_key, '1', 'EX', 60)
     end
 
-    return 1 -- Allowed
+    return 1 -- Permitido
 end
 
 redis.register_function('deadband_check_and_update', deadband_check_and_update)

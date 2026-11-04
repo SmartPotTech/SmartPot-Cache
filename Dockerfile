@@ -1,8 +1,8 @@
 FROM valkey/valkey:9.1.2-alpine
 
 LABEL org.opencontainers.image.title="SmartPot Cache (Valkey)" \
-      org.opencontainers.image.description="Valkey de SmartPot: caché, contadores, UDS y funciones atómicas Lua, sin persistencia, con contraseña obligatoria" \
-      org.opencontainers.image.source="https://github.com/SmartPotTech/SmartPot-Cache-Valkey" \
+      org.opencontainers.image.description="SmartPot Valkey cache: ephemeral state, counters, UDS, and atomic Lua functions without persistence and with mandatory password" \
+      org.opencontainers.image.source="https://github.com/SmartPotTech/SmartPot-Cache" \
       org.opencontainers.image.licenses="MIT"
 
 # Parches de Alpine al construir (zlib y demás) aunque la etiqueta de Valkey no haya cambiado.

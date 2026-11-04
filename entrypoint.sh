@@ -4,9 +4,9 @@ set -eu
 # Valkey (reemplazo libre de Redis) acepta su propia variable VALKEY_PASSWORD y,
 # por compatibilidad con despliegues anteriores, también REDIS_PASSWORD.
 PASSWORD="${VALKEY_PASSWORD:-${REDIS_PASSWORD:-}}"
-: "${PASSWORD:?Falta VALKEY_PASSWORD}"
+: "${PASSWORD:?Missing VALKEY_PASSWORD}"
 if [ "${#PASSWORD}" -lt 16 ]; then
-  echo "VALKEY_PASSWORD debe tener al menos 16 caracteres."
+  echo "VALKEY_PASSWORD must be at least 16 characters."
   exit 1
 fi
 
@@ -50,9 +50,9 @@ if [ -n "${VALKEY_SOCKET:-}" ]; then
   if touch "$SOCKET_DIR/.smartpot-probe" 2>/dev/null; then
     rm -f "$SOCKET_DIR/.smartpot-probe"
     printf 'unixsocket %s\nunixsocketperm 770\n' "$VALKEY_SOCKET" >> "$CONFIG"
-    echo "Socket UNIX habilitado en ${VALKEY_SOCKET} (permisos 770)."
+    echo "UNIX socket enabled at ${VALKEY_SOCKET} (permissions 770)."
   else
-    echo "Aviso: ${SOCKET_DIR} no es escribible; Valkey atiende solo por TCP 6379."
+    echo "Warning: ${SOCKET_DIR} is not writable; Valkey is listening only on TCP 6379."
   fi
 fi
 
@@ -63,7 +63,7 @@ if [ -f "$LUA_LIB" ]; then
     for _ in $(seq 1 40); do
       if REDISCLI_AUTH="$PASSWORD" valkey-cli -p 6379 ping 2>/dev/null | grep -q PONG; then
         REDISCLI_AUTH="$PASSWORD" valkey-cli -p 6379 FUNCTION LOAD REPLACE "$(cat "$LUA_LIB")" >/dev/null 2>&1 || true
-        echo "Librería de funciones atómicas Lua (smartpot) precargada con éxito."
+        echo "Atomic Lua function library (smartpot) preloaded successfully."
         break
       fi
       sleep 0.1
@@ -71,5 +71,5 @@ if [ -f "$LUA_LIB" ]; then
   ) &
 fi
 
-echo "Valkey listo: ${MAXMEMORY} de memoria, ${VALKEY_IO_THREADS:-4} hilos de E/S, sin persistencia y con contraseña."
+echo "Valkey ready: ${MAXMEMORY} memory, ${VALKEY_IO_THREADS:-4} I/O threads, no persistence, password enabled."
 exec valkey-server "$CONFIG"
