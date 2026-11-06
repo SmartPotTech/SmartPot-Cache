@@ -42,7 +42,7 @@ It is an **ephemeral cache without persistence**: if restarted, the API reconstr
 
 - Mandatory password of at least 16 characters (`VALKEY_PASSWORD`, or `REDIS_PASSWORD` for compatibility); without it, the container refuses to start.
 - Configuration is generated in `/tmp` at startup and never printed to logs.
-- `FLUSHALL`, `FLUSHDB`, `CONFIG`, `DEBUG`, and `SHUTDOWN` are disabled.
+- Administrative and bulk-data commands are disabled: `FLUSHALL`, `FLUSHDB`, `CONFIG`, `DEBUG`, `SHUTDOWN`, `KEYS`, `SAVE`, `BGSAVE`, `ACL`, `MODULE`, `SCRIPT`, `REPLICAOF`, and `MIGRATE`. Atomic Lua functions remain available through `FUNCTION`/`EVAL` for the API's counters.
 - Runs as user `999`, with a read-only root filesystem and zero Linux capabilities.
 - In production, no ports are exposed on the host: only the API reaches it over the internal Docker network.
 
@@ -183,7 +183,7 @@ Es una caché **sin persistencia**: si se reinicia, la API reconstruye todo. Si 
 
 - Contraseña obligatoria de al menos 16 caracteres (`VALKEY_PASSWORD`, o `REDIS_PASSWORD` por compatibilidad); sin ella el contenedor no arranca.
 - La configuración se genera en `/tmp` al arrancar y nunca se imprime en los logs.
-- `FLUSHALL`, `FLUSHDB`, `CONFIG`, `DEBUG` y `SHUTDOWN` están deshabilitados.
+- Los comandos administrativos y de movimiento masivo de datos están deshabilitados: `FLUSHALL`, `FLUSHDB`, `CONFIG`, `DEBUG`, `SHUTDOWN`, `KEYS`, `SAVE`, `BGSAVE`, `ACL`, `MODULE`, `SCRIPT`, `REPLICAOF` y `MIGRATE`. Las funciones Lua atómicas siguen disponibles con `FUNCTION`/`EVAL` para los contadores de la API.
 - Corre como el usuario `999`, con sistema de archivos de solo lectura y sin capacidades de Linux.
 - En producción no publica puertos: solo la API lo alcanza por la red interna de Docker.
 

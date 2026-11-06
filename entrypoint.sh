@@ -41,6 +41,15 @@ rename-command FLUSHDB ""
 rename-command CONFIG ""
 rename-command DEBUG ""
 rename-command SHUTDOWN ""
+# Superficie administrativa y de movimiento de datos que la API no usa (M-10).
+rename-command KEYS ""
+rename-command SAVE ""
+rename-command BGSAVE ""
+rename-command ACL ""
+rename-command MODULE ""
+rename-command SCRIPT ""
+rename-command REPLICAOF ""
+rename-command MIGRATE ""
 EOF
 
 # Socket UNIX opcional, además de TCP 6379: solo si se pide con VALKEY_SOCKET y su carpeta es un volumen escribible
