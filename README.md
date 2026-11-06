@@ -75,20 +75,20 @@ SmartPot-Cache/
 
 #### One-Command Deployment
 
-The image is public: `ghcr.io/smartpottech/smartpot-cache-valkey`. You can launch the complete platform, including this service, with a single command and without cloning the code:
+The image is public: `ghcr.io/smartpottech/smartpot-cache`. You can launch the complete platform, including this service, with a single command and without cloning the code:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/SmartPotTech/.github/main/docker/demo-beta/compose.yaml | docker compose -f - up -d --wait
+curl -fsSL https://raw.githubusercontent.com/SmartPotTech/.github/main/docker/demo/compose.yaml | docker compose -f - up -d --wait
 ```
 
-Open http://localhost:5173 and sign in with `demo@smartpot.app` / `SmartPot2026`. Stop it with `docker compose -p smartpot-demo-beta down` (add `-v` to remove data). See the [beta demo](https://github.com/SmartPotTech/.github/tree/main/docker/demo-beta) for details.
+Open http://localhost:5173 and sign in with `demo@smartpot.app` / `SmartPot2026`. Stop it with `docker compose -p smartpot-demo down` (add `-v` to remove data). See the [beta demo](https://github.com/SmartPotTech/.github/tree/main/docker/demo-beta) for details.
 
 To run only this service from the published image:
 
 ```bash
 docker run -d --name smartpot-cache --read-only --tmpfs /tmp --cap-drop ALL \
   -p 127.0.0.1:6379:6379 -e VALKEY_PASSWORD=<at-least-16-characters> \
-  ghcr.io/smartpottech/smartpot-cache-valkey:latest
+  ghcr.io/smartpottech/smartpot-cache:latest
 ```
 
 #### From Source with Docker Compose
@@ -107,14 +107,14 @@ docker compose up -d
 #### Smoke Test
 
 ```bash
-docker build -t smartpot-cache-valkey:ci .
-sh tests/smoke.sh smartpot-cache-valkey:ci
+docker build -t smartpot-cache:ci .
+sh tests/smoke.sh smartpot-cache:ci
 ```
 
 ### Published Image
 
 ```bash
-docker pull ghcr.io/smartpottech/smartpot-cache-valkey:latest
+docker pull ghcr.io/smartpottech/smartpot-cache:latest
 ```
 
 Every push to `main` runs through CI, publishes the image to GHCR (and mirrors it to Docker Hub when credentials are configured), and dispatches a rolling update to [SmartPotTech/.github](https://github.com/SmartPotTech/.github) with `/health` verification.
@@ -216,20 +216,20 @@ SmartPot-Cache/
 
 #### Despliegue en un comando
 
-La imagen es pública: `ghcr.io/smartpottech/smartpot-cache-valkey`. La plataforma completa, con este servicio incluido, se levanta con un solo comando y sin descargar el código:
+La imagen es pública: `ghcr.io/smartpottech/smartpot-cache`. La plataforma completa, con este servicio incluido, se levanta con un solo comando y sin descargar el código:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/SmartPotTech/.github/main/docker/demo-beta/compose.yaml | docker compose -f - up -d --wait
+curl -fsSL https://raw.githubusercontent.com/SmartPotTech/.github/main/docker/demo/compose.yaml | docker compose -f - up -d --wait
 ```
 
-Abre http://localhost:5173 e ingresa con `demo@smartpot.app` / `SmartPot2026`. Se detiene con `docker compose -p smartpot-demo-beta down` (con `-v` borra también los datos). Más detalle en la [demo beta](https://github.com/SmartPotTech/.github/tree/main/docker/demo-beta).
+Abre http://localhost:5173 e ingresa con `demo@smartpot.app` / `SmartPot2026`. Se detiene con `docker compose -p smartpot-demo down` (con `-v` borra también los datos). Más detalle en la [demo beta](https://github.com/SmartPotTech/.github/tree/main/docker/demo-beta).
 
 Solo este servicio, con la imagen publicada:
 
 ```bash
 docker run -d --name smartpot-cache --read-only --tmpfs /tmp --cap-drop ALL \
   -p 127.0.0.1:6379:6379 -e VALKEY_PASSWORD=<mínimo-16-caracteres> \
-  ghcr.io/smartpottech/smartpot-cache-valkey:latest
+  ghcr.io/smartpottech/smartpot-cache:latest
 ```
 
 #### Desde el código con Docker Compose
@@ -248,14 +248,14 @@ docker compose up -d
 #### Prueba de humo
 
 ```bash
-docker build -t smartpot-cache-valkey:ci .
-sh tests/smoke.sh smartpot-cache-valkey:ci
+docker build -t smartpot-cache:ci .
+sh tests/smoke.sh smartpot-cache:ci
 ```
 
 ### Imagen publicada
 
 ```bash
-docker pull ghcr.io/smartpottech/smartpot-cache-valkey:latest
+docker pull ghcr.io/smartpottech/smartpot-cache:latest
 ```
 
 Cada cambio en `main` pasa por el CI, publica la imagen en GHCR (y en Docker Hub como réplica cuando el repositorio tiene credenciales) y pide el despliegue al workflow central de [SmartPotTech/.github](https://github.com/SmartPotTech/.github), que actualiza producción de a uno y verifica `/health`.
