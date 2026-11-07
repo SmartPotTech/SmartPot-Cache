@@ -64,7 +64,7 @@ SmartPot-Cache/
 │   ├── gcra_dedup.lua
 │   └── smartpot_functions.lua
 ├── tests/
-│   └── smoke.sh                # Auth, disabled commands, secret-free logs, and variable compatibility
+│   └── smoke.sh                # Auth, disabled commands, idempotency, expiry, ephemeral restart, UDS, secret-free logs, and compatibility
 ├── compose.yaml
 ├── Dockerfile                  # Unprivileged valkey/valkey:9.1.2-alpine
 ├── entrypoint.sh               # Generates runtime config with environment password
@@ -205,7 +205,7 @@ SmartPot-Cache/
 │   ├── gcra_dedup.lua
 │   └── smartpot_functions.lua
 ├── tests/
-│   └── smoke.sh                # Autenticación, comandos bloqueados, logs sin secretos y compatibilidad de variables
+│   └── smoke.sh                # Autenticación, comandos bloqueados, idempotencia, expiración, reinicio efímero, UDS, logs sin secretos y compatibilidad
 ├── compose.yaml
 ├── Dockerfile                  # valkey/valkey:9.1.2-alpine sin privilegios
 ├── entrypoint.sh               # Genera la configuración con la contraseña del entorno
