@@ -123,6 +123,7 @@ Every push to `main` runs through CI, publishes the image to GHCR (and mirrors i
 
 Valkey stores only ephemeral data: if lost, the platform continues operating. Component documentation is available in [`docs/`](docs/SmartPot_Cache_Documentation.md) (also in [DOCX](docs/SmartPot_Cache_Documentation.docx) and [PDF](docs/SmartPot_Cache_Documentation.pdf)), with diagrams in [`docs/diagrams`](docs/diagrams). The [technical documentation](https://github.com/SmartPotTech/.github/blob/main/docs/SmartPot_Technical_Documentation.md) explains how the API uses each key and how it behaves when the cache is unreachable:
 
+- [Interactive diagrams](docs/diagrams/interactive/README.md#english): the container, its listeners and the preloaded Lua functions, in English and Spanish, with links to the exact source lines
 - [Complete Architecture](https://github.com/SmartPotTech/.github/blob/main/docs/diagrams/SmartPot_Global_01_Architecture.svg): where the cache sits and which keys it holds
 - [Data Lineage](https://github.com/SmartPotTech/.github/blob/main/docs/diagrams/SmartPot_Global_04_Data_Lineage.svg): when each flow reads or writes a cache key
 
@@ -264,6 +265,7 @@ Cada cambio en `main` pasa por el CI, publica la imagen en GHCR (y en Docker Hub
 
 Valkey guarda solo datos efímeros: si se pierde, la plataforma sigue. Su documentación propia está en [`docs/`](docs/SmartPot_Cache_Documentation.md) (también en [DOCX](docs/SmartPot_Cache_Documentation.docx) y [PDF](docs/SmartPot_Cache_Documentation.pdf)), con sus diagramas en [`docs/diagrams`](docs/diagrams): el general de la imagen y el de las llaves. La [documentación técnica](https://github.com/SmartPotTech/.github/blob/main/docs/SmartPot_Technical_Documentation.md) explica para qué usa la API cada llave y cómo actúa si la caché no responde. Los diagramas generales muestran la plataforma completa en una sola imagen ampliable:
 
+- [Diagramas interactivos](docs/diagrams/interactive/README.md#español): el contenedor, sus escuchas y las funciones Lua precargadas, en español e inglés, con enlaces a las líneas exactas del código
 - [Arquitectura completa](https://github.com/SmartPotTech/.github/blob/main/docs/diagrams/SmartPot_Global_01_Architecture.svg): dónde vive la caché y qué llaves guarda
 - [Linaje de los datos](https://github.com/SmartPotTech/.github/blob/main/docs/diagrams/SmartPot_Global_04_Data_Lineage.svg): en qué momento de cada flujo se consulta o se escribe una llave
 
