@@ -1,10 +1,10 @@
 <!-- portada
-eyebrow: Component Documentation · Documentación del componente
+eyebrow: Component Technical Documentation
 titulo: SmartPot-Cache
 acento: Cache
-subtitulo: SmartPot Short-Term Memory · La memoria corta de SmartPot
+subtitulo: Hardened Valkey In-Memory Cache and Rate Limiting
 bajada: Hardened Valkey cache for rate limits, agent cooldowns, AI caches, and Telegram link codes, without persistence and isolated on the internal network.
-documento: SmartPot-Cache
+documento: SmartPot-Cache Documentation
 version: 1.0 · October 2026
 equipo: SmartPotTech
 proyecto: smartpot.app
@@ -12,11 +12,7 @@ proyecto: smartpot.app
 
 # SmartPot-Cache
 
-[English](#english) | [Español](#español)
-
-<!-- parte: ENGLISH | SmartPot-Cache (Valkey) -->
-
-<a id="english"></a>
+<!-- parte: PART I | Component Overview -->
 
 ## Document Sheet
 
@@ -47,17 +43,17 @@ Redis was the open-source cache originally used by SmartPot, but starting in ver
 %%{init: {"theme": "base", "fontFamily": "Segoe UI, Arial, sans-serif", "themeVariables": {"fontFamily": "Segoe UI, Arial, sans-serif", "fontSize": "15px", "primaryColor": "#DDF5EA", "primaryTextColor": "#17261F", "primaryBorderColor": "#067A52", "secondaryColor": "#E3F2FB", "secondaryTextColor": "#17261F", "secondaryBorderColor": "#1F6FA0", "tertiaryColor": "#F2F7F4", "tertiaryTextColor": "#17261F", "tertiaryBorderColor": "#D5E3DC", "lineColor": "#5B6B63", "textColor": "#17261F", "mainBkg": "#DDF5EA", "nodeBorder": "#067A52", "clusterBkg": "#F7FAF8", "clusterBorder": "#D5E3DC", "edgeLabelBackground": "#FFFFFF", "actorBkg": "#067A52", "actorBorder": "#0B3D2B", "actorTextColor": "#FFFFFF", "actorLineColor": "#5B6B63", "signalColor": "#17261F", "signalTextColor": "#17261F", "labelBoxBkgColor": "#0B3D2B", "labelBoxBorderColor": "#0B3D2B", "labelTextColor": "#FFFFFF", "loopTextColor": "#0B3D2B", "noteBkgColor": "#FDF4DD", "noteBorderColor": "#C98D12", "noteTextColor": "#17261F", "activationBkgColor": "#DDF5EA", "activationBorderColor": "#067A52", "attributeBackgroundColorOdd": "#FFFFFF", "attributeBackgroundColorEven": "#F2F7F4"}, "layout": "elk", "elk": {"nodePlacementStrategy": "BRANDES_KOEPF", "mergeEdges": false, "cycleBreakingStrategy": "GREEDY"}}}%%
 flowchart LR
   api["SmartPot-API<br/>CacheStore"]
-  subgraph imagen["Imagen smartpot-cache-valkey · valkey:9.1.2-alpine · usuario 999"]
+  subgraph imagen["Image smartpot-cache · valkey:9.1.3-alpine · User 999"]
     direction TB
-    entry["entrypoint.sh<br/>genera la configuración en /tmp<br/>con VALKEY_PASSWORD · no la imprime"]
-    valkey["Valkey<br/>requirepass · sin persistencia<br/>LRU con VALKEY_MAXMEMORY"]
-    blocked["Deshabilitados<br/>FLUSHALL · FLUSHDB · CONFIG<br/>DEBUG · SHUTDOWN"]
+    entry["entrypoint.sh<br/>generates config in /tmp<br/>with VALKEY_PASSWORD · suppressed logs"]
+    valkey["Valkey<br/>requirepass · no persistence<br/>LRU via VALKEY_MAXMEMORY"]
+    blocked["Disabled Commands<br/>FLUSHALL · FLUSHDB · CONFIG<br/>DEBUG · SHUTDOWN"]
   end
-  local["Memoria local de la API<br/>30 s si Valkey no responde"]
-  api -->|"red interna · contraseña"| valkey
+  local["In-Memory API Fallback Store<br/>30 s TTL on Valkey outage"]
+  api -->|"internal network · password"| valkey
   entry --> valkey
   valkey --- blocked
-  api -.->|"respaldo"| local
+  api -.->|"fallback"| local
   classDef leaf fill:#DDF5EA,stroke:#067A52,color:#17261F
   classDef water fill:#E3F2FB,stroke:#1F6FA0,color:#17261F
   classDef sun fill:#FDF4DD,stroke:#C98D12,color:#17261F
@@ -79,26 +75,26 @@ flowchart LR
 ```mermaid
 %%{init: {"theme": "base", "fontFamily": "Segoe UI, Arial, sans-serif", "themeVariables": {"fontFamily": "Segoe UI, Arial, sans-serif", "fontSize": "15px", "primaryColor": "#DDF5EA", "primaryTextColor": "#17261F", "primaryBorderColor": "#067A52", "secondaryColor": "#E3F2FB", "secondaryTextColor": "#17261F", "secondaryBorderColor": "#1F6FA0", "tertiaryColor": "#F2F7F4", "tertiaryTextColor": "#17261F", "tertiaryBorderColor": "#D5E3DC", "lineColor": "#5B6B63", "textColor": "#17261F", "mainBkg": "#DDF5EA", "nodeBorder": "#067A52", "clusterBkg": "#F7FAF8", "clusterBorder": "#D5E3DC", "edgeLabelBackground": "#FFFFFF", "actorBkg": "#067A52", "actorBorder": "#0B3D2B", "actorTextColor": "#FFFFFF", "actorLineColor": "#5B6B63", "signalColor": "#17261F", "signalTextColor": "#17261F", "labelBoxBkgColor": "#0B3D2B", "labelBoxBorderColor": "#0B3D2B", "labelTextColor": "#FFFFFF", "loopTextColor": "#0B3D2B", "noteBkgColor": "#FDF4DD", "noteBorderColor": "#C98D12", "noteTextColor": "#17261F", "activationBkgColor": "#DDF5EA", "activationBorderColor": "#067A52", "attributeBackgroundColorOdd": "#FFFFFF", "attributeBackgroundColorEven": "#F2F7F4"}}}%%
 flowchart TB
-  subgraph llaves["Llaves smartpot:*"]
+  subgraph keys["smartpot:* Keys"]
     direction TB
-    rate["rate:* · 1 minuto<br/>300 por IP · 10 en /auth"]
-    reading["reading:cropId · 5 s<br/>una lectura por cultivo"]
-    aieval["ai-eval:cropId · 30 s o 5 min<br/>frecuencia de evaluación"]
-    agent["agent:cropId:actuador · 10 min<br/>enfriamiento del agente"]
-    notify["notify:* · 1 hora<br/>alertas sin repetir"]
-    profiles["ai:crop-profiles · 1 hora<br/>ai:learning-status · 1 minuto"]
-    link["channel-link:telegram:código · 10 min<br/>se borra al usarse (GETDEL)"]
-    share["crop-share:telegram:código · 10 min<br/>compartir un cultivo con otro chat"]
-    weather["weather:lat:lon · 10 min<br/>clima del lugar · 2 min si falló"]
+    rate["rate:* · 1 minute<br/>300 per IP · 10 on /auth"]
+    reading["reading:cropId · 5 s<br/>single latest reading per crop"]
+    aieval["ai-eval:cropId · 30 s or 5 min<br/>evaluation cadence"]
+    agent["agent:cropId:actuator · 10 min<br/>autonomous agent cooldown"]
+    notify["notify:* · 1 hour<br/>deduplicated alerts"]
+    profiles["ai:crop-profiles · 1 hour<br/>ai:learning-status · 1 minute"]
+    link["channel-link:telegram:code · 10 min<br/>deleted on use (GETDEL)"]
+    share["crop-share:telegram:code · 10 min<br/>share crop with external chat"]
+    weather["weather:lat:lon · 10 min<br/>location weather · 2 min on error"]
   end
-  http["Filtro de peticiones"] --> rate
-  mqtt["Telemetría MQTT"] --> reading
+  http["Request Limiter / Filter"] --> rate
+  mqtt["MQTT Telemetry Ingest"] --> reading
   mqtt --> aieval --> agent
-  alerts["Notificaciones"] --> notify
-  ai["Cliente de la IA"] --> profiles
-  tg["Vincular Telegram"] --> link
+  alerts["Notification Dispatcher"] --> notify
+  ai["AI Assistant Client"] --> profiles
+  tg["Telegram Channel Linker"] --> link
   tg --> share
-  crops["Lugar del cultivo"] --> weather
+  crops["Crop Location Resolver"] --> weather
   classDef leaf fill:#DDF5EA,stroke:#067A52,color:#17261F
   classDef water fill:#E3F2FB,stroke:#1F6FA0,color:#17261F
   classDef sun fill:#FDF4DD,stroke:#C98D12,color:#17261F
@@ -165,17 +161,17 @@ Redis era el software libre que SmartPot usaba para esta caché, pero desde su v
 %%{init: {"theme": "base", "fontFamily": "Segoe UI, Arial, sans-serif", "themeVariables": {"fontFamily": "Segoe UI, Arial, sans-serif", "fontSize": "15px", "primaryColor": "#DDF5EA", "primaryTextColor": "#17261F", "primaryBorderColor": "#067A52", "secondaryColor": "#E3F2FB", "secondaryTextColor": "#17261F", "secondaryBorderColor": "#1F6FA0", "tertiaryColor": "#F2F7F4", "tertiaryTextColor": "#17261F", "tertiaryBorderColor": "#D5E3DC", "lineColor": "#5B6B63", "textColor": "#17261F", "mainBkg": "#DDF5EA", "nodeBorder": "#067A52", "clusterBkg": "#F7FAF8", "clusterBorder": "#D5E3DC", "edgeLabelBackground": "#FFFFFF", "actorBkg": "#067A52", "actorBorder": "#0B3D2B", "actorTextColor": "#FFFFFF", "actorLineColor": "#5B6B63", "signalColor": "#17261F", "signalTextColor": "#17261F", "labelBoxBkgColor": "#0B3D2B", "labelBoxBorderColor": "#0B3D2B", "labelTextColor": "#FFFFFF", "loopTextColor": "#0B3D2B", "noteBkgColor": "#FDF4DD", "noteBorderColor": "#C98D12", "noteTextColor": "#17261F", "activationBkgColor": "#DDF5EA", "activationBorderColor": "#067A52", "attributeBackgroundColorOdd": "#FFFFFF", "attributeBackgroundColorEven": "#F2F7F4"}, "layout": "elk", "elk": {"nodePlacementStrategy": "BRANDES_KOEPF", "mergeEdges": false, "cycleBreakingStrategy": "GREEDY"}}}%%
 flowchart LR
   api["SmartPot-API<br/>CacheStore"]
-  subgraph imagen["Imagen smartpot-cache-valkey · valkey:9.1.2-alpine · usuario 999"]
+  subgraph imagen["Image smartpot-cache · valkey:9.1.3-alpine · User 999"]
     direction TB
-    entry["entrypoint.sh<br/>genera la configuración en /tmp<br/>con VALKEY_PASSWORD · no la imprime"]
-    valkey["Valkey<br/>requirepass · sin persistencia<br/>LRU con VALKEY_MAXMEMORY"]
-    blocked["Deshabilitados<br/>FLUSHALL · FLUSHDB · CONFIG<br/>DEBUG · SHUTDOWN"]
+    entry["entrypoint.sh<br/>generates config in /tmp<br/>with VALKEY_PASSWORD · suppressed logs"]
+    valkey["Valkey<br/>requirepass · no persistence<br/>LRU via VALKEY_MAXMEMORY"]
+    blocked["Disabled Commands<br/>FLUSHALL · FLUSHDB · CONFIG<br/>DEBUG · SHUTDOWN"]
   end
-  local["Memoria local de la API<br/>30 s si Valkey no responde"]
-  api -->|"red interna · contraseña"| valkey
+  local["In-Memory API Fallback Store<br/>30 s TTL on Valkey outage"]
+  api -->|"internal network · password"| valkey
   entry --> valkey
   valkey --- blocked
-  api -.->|"respaldo"| local
+  api -.->|"fallback"| local
   classDef leaf fill:#DDF5EA,stroke:#067A52,color:#17261F
   classDef water fill:#E3F2FB,stroke:#1F6FA0,color:#17261F
   classDef sun fill:#FDF4DD,stroke:#C98D12,color:#17261F
@@ -197,26 +193,26 @@ flowchart LR
 ```mermaid
 %%{init: {"theme": "base", "fontFamily": "Segoe UI, Arial, sans-serif", "themeVariables": {"fontFamily": "Segoe UI, Arial, sans-serif", "fontSize": "15px", "primaryColor": "#DDF5EA", "primaryTextColor": "#17261F", "primaryBorderColor": "#067A52", "secondaryColor": "#E3F2FB", "secondaryTextColor": "#17261F", "secondaryBorderColor": "#1F6FA0", "tertiaryColor": "#F2F7F4", "tertiaryTextColor": "#17261F", "tertiaryBorderColor": "#D5E3DC", "lineColor": "#5B6B63", "textColor": "#17261F", "mainBkg": "#DDF5EA", "nodeBorder": "#067A52", "clusterBkg": "#F7FAF8", "clusterBorder": "#D5E3DC", "edgeLabelBackground": "#FFFFFF", "actorBkg": "#067A52", "actorBorder": "#0B3D2B", "actorTextColor": "#FFFFFF", "actorLineColor": "#5B6B63", "signalColor": "#17261F", "signalTextColor": "#17261F", "labelBoxBkgColor": "#0B3D2B", "labelBoxBorderColor": "#0B3D2B", "labelTextColor": "#FFFFFF", "loopTextColor": "#0B3D2B", "noteBkgColor": "#FDF4DD", "noteBorderColor": "#C98D12", "noteTextColor": "#17261F", "activationBkgColor": "#DDF5EA", "activationBorderColor": "#067A52", "attributeBackgroundColorOdd": "#FFFFFF", "attributeBackgroundColorEven": "#F2F7F4"}}}%%
 flowchart TB
-  subgraph llaves["Llaves smartpot:*"]
+  subgraph keys["smartpot:* Keys"]
     direction TB
-    rate["rate:* · 1 minuto<br/>300 por IP · 10 en /auth"]
-    reading["reading:cropId · 5 s<br/>una lectura por cultivo"]
-    aieval["ai-eval:cropId · 30 s o 5 min<br/>frecuencia de evaluación"]
-    agent["agent:cropId:actuador · 10 min<br/>enfriamiento del agente"]
-    notify["notify:* · 1 hora<br/>alertas sin repetir"]
-    profiles["ai:crop-profiles · 1 hora<br/>ai:learning-status · 1 minuto"]
-    link["channel-link:telegram:código · 10 min<br/>se borra al usarse (GETDEL)"]
-    share["crop-share:telegram:código · 10 min<br/>compartir un cultivo con otro chat"]
-    weather["weather:lat:lon · 10 min<br/>clima del lugar · 2 min si falló"]
+    rate["rate:* · 1 minute<br/>300 per IP · 10 on /auth"]
+    reading["reading:cropId · 5 s<br/>single latest reading per crop"]
+    aieval["ai-eval:cropId · 30 s or 5 min<br/>evaluation cadence"]
+    agent["agent:cropId:actuator · 10 min<br/>autonomous agent cooldown"]
+    notify["notify:* · 1 hour<br/>deduplicated alerts"]
+    profiles["ai:crop-profiles · 1 hour<br/>ai:learning-status · 1 minute"]
+    link["channel-link:telegram:code · 10 min<br/>deleted on use (GETDEL)"]
+    share["crop-share:telegram:code · 10 min<br/>share crop with external chat"]
+    weather["weather:lat:lon · 10 min<br/>location weather · 2 min on error"]
   end
-  http["Filtro de peticiones"] --> rate
-  mqtt["Telemetría MQTT"] --> reading
+  http["Request Limiter / Filter"] --> rate
+  mqtt["MQTT Telemetry Ingest"] --> reading
   mqtt --> aieval --> agent
-  alerts["Notificaciones"] --> notify
-  ai["Cliente de la IA"] --> profiles
-  tg["Vincular Telegram"] --> link
+  alerts["Notification Dispatcher"] --> notify
+  ai["AI Assistant Client"] --> profiles
+  tg["Telegram Channel Linker"] --> link
   tg --> share
-  crops["Lugar del cultivo"] --> weather
+  crops["Crop Location Resolver"] --> weather
   classDef leaf fill:#DDF5EA,stroke:#067A52,color:#17261F
   classDef water fill:#E3F2FB,stroke:#1F6FA0,color:#17261F
   classDef sun fill:#FDF4DD,stroke:#C98D12,color:#17261F
