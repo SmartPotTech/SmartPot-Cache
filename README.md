@@ -32,6 +32,22 @@ The API uses it for short-lived state shared across requests:
 
 It is an **ephemeral cache without persistence**: if restarted, the API reconstructs everything on demand. If Valkey is unreachable, the API falls back to in-process memory for 30 seconds and retries automatically.
 
+```mermaid
+flowchart LR
+  api["SmartPot-API<br/>CacheStore"]
+  subgraph imagen["Image smartpot-cache · valkey:9.1.3-alpine · User 999"]
+    direction TB
+    entry["entrypoint.sh<br/>generates config in /tmp<br/>with VALKEY_PASSWORD · suppressed logs"]
+    valkey["Valkey<br/>requirepass · no persistence<br/>LRU via VALKEY_MAXMEMORY"]
+    blocked["Disabled Commands<br/>FLUSHALL · FLUSHDB · CONFIG<br/>DEBUG · SHUTDOWN"]
+  end
+  local["In-Memory API Fallback Store<br/>30 s TTL on Valkey outage"]
+  api -->|"internal network · password"| valkey
+  entry --> valkey
+  valkey --- blocked
+  api -.->|"fallback"| local
+```
+
 ### Why Valkey
 
 - **Open-source license.** Valkey preserves the BSD-3-Clause license under which Redis was originally released, whereas Redis 8 switched to source-available/restrictive licensing (AGPLv3 / SSPLv2 / RSALv2).
@@ -173,6 +189,22 @@ La API la usa para datos cortos y compartidos entre peticiones:
 | Clima del lugar de cada cultivo                  | `smartpot:weather:{lat}:{lon}`                                | 10 minutos (2 si el clima no respondió) |
 
 Es una caché **sin persistencia**: si se reinicia, la API reconstruye todo. Si Valkey no responde, la API sigue funcionando con memoria local durante 30 segundos y vuelve a intentar.
+
+```mermaid
+flowchart LR
+  api["SmartPot-API<br/>CacheStore"]
+  subgraph imagen["Image smartpot-cache · valkey:9.1.3-alpine · User 999"]
+    direction TB
+    entry["entrypoint.sh<br/>generates config in /tmp<br/>with VALKEY_PASSWORD · suppressed logs"]
+    valkey["Valkey<br/>requirepass · no persistence<br/>LRU via VALKEY_MAXMEMORY"]
+    blocked["Disabled Commands<br/>FLUSHALL · FLUSHDB · CONFIG<br/>DEBUG · SHUTDOWN"]
+  end
+  local["In-Memory API Fallback Store<br/>30 s TTL on Valkey outage"]
+  api -->|"internal network · password"| valkey
+  entry --> valkey
+  valkey --- blocked
+  api -.->|"fallback"| local
+```
 
 ### Por qué Valkey
 
