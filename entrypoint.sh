@@ -25,7 +25,8 @@ timeout 300
 tcp-keepalive 60
 databases ${DATABASES}
 maxmemory ${MAXMEMORY}
-maxmemory-policy allkeys-lru
+# Evicción de claves con TTL para no expulsar sesiones ni revocaciones críticas sin TTL.
+maxmemory-policy volatile-lru
 save ""
 appendonly no
 dir /tmp
