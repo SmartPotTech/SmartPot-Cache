@@ -117,7 +117,7 @@ docker compose up -d
 | Variable           | Default | Description                                                  |
 |--------------------|---------|--------------------------------------------------------------|
 | `VALKEY_PASSWORD`  | —       | Required, minimum 16 characters (accepts `REDIS_PASSWORD`)   |
-| `VALKEY_MAXMEMORY` | `128mb` | Maximum memory; evicts least recently used keys (`allkeys-lru`) |
+| `VALKEY_MAXMEMORY` | `128mb` | Maximum memory; evicts least recently used keys with TTL (`volatile-lru`) |
 | `VALKEY_DATABASES` | `4`     | Logical databases available                                  |
 
 #### Smoke Test
@@ -275,7 +275,7 @@ docker compose up -d
 | Variable           | Por defecto | Descripción                                                 |
 |--------------------|-------------|-------------------------------------------------------------|
 | `VALKEY_PASSWORD`  | —           | Obligatoria, mínimo 16 caracteres (acepta `REDIS_PASSWORD`) |
-| `VALKEY_MAXMEMORY` | `128mb`     | Memoria máxima; se descartan las llaves menos usadas (LRU)  |
+| `VALKEY_MAXMEMORY` | `128mb`     | Memoria máxima; descarta claves LRU con TTL (`volatile-lru`) |
 | `VALKEY_DATABASES` | `4`         | Bases lógicas disponibles                                   |
 
 #### Prueba de humo

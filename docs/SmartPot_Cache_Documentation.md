@@ -121,7 +121,7 @@ flowchart TB
 | Variable           | Default | Purpose                                                     |
 |--------------------|---------|-------------------------------------------------------------|
 | `VALKEY_PASSWORD`  | —       | Required (accepts `REDIS_PASSWORD` for compatibility)       |
-| `VALKEY_MAXMEMORY` | `128mb` | Maximum memory; evicts least recently used keys (`allkeys-lru`) |
+| `VALKEY_MAXMEMORY` | `128mb` | Maximum memory; evicts least recently used keys with TTL (`volatile-lru`) |
 | `VALKEY_DATABASES` | `4`     | Logical databases                                           |
 
 `sh tests/smoke.sh smartpot-cache-valkey:ci` verifies authentication, confirms the engine is Valkey, checks that `FLUSHALL` and `CONFIG` return unknown command errors, ensures logs never leak the password, verifies the container refuses to start without a password, and confirms `REDIS_PASSWORD` backward compatibility. Every push to `main` runs CI, publishes `ghcr.io/smartpottech/smartpot-cache-valkey`, and triggers central deployment in `.github`.

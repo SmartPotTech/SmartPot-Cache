@@ -35,7 +35,7 @@ check "stores and reads values" 'cli -a "$PASS" --no-auth-warning set smoke 1 >/
 check "DEL is idempotent" 'cli -a "$PASS" --no-auth-warning set smoke-idempotent 1 >/dev/null && [ "$(cli -a "$PASS" --no-auth-warning del smoke-idempotent)" = "1" ] && [ "$(cli -a "$PASS" --no-auth-warning del smoke-idempotent)" = "0" ]'
 check "SETNX is idempotent" 'cli -a "$PASS" --no-auth-warning setnx smoke-lock 1 >/dev/null && [ "$(cli -a "$PASS" --no-auth-warning setnx smoke-lock 2)" = "0" ] && cli -a "$PASS" --no-auth-warning del smoke-lock >/dev/null'
 check "keys expire with PX" 'cli -a "$PASS" --no-auth-warning set ephemeral 1 px 100 >/dev/null && sleep 1 && [ "$(cli -a "$PASS" --no-auth-warning exists ephemeral)" = "0" ]'
-check "maxmemory policy is allkeys-lru" 'cli -a "$PASS" --no-auth-warning info memory | grep -q "maxmemory_policy:allkeys-lru"'
+check "maxmemory policy is volatile-lru" 'cli -a "$PASS" --no-auth-warning info memory | grep -q "maxmemory_policy:volatile-lru"'
 check "smartpot Lua functions are registered" 'cli -a "$PASS" --no-auth-warning function list | grep -q smartpot'
 check "FLUSHALL is disabled" 'cli -a "$PASS" --no-auth-warning flushall | grep -qi "unknown command"'
 check "CONFIG is disabled" 'cli -a "$PASS" --no-auth-warning config get dir | grep -qi "unknown command"'
